@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .quiz-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .code-block {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+
+        .selected {
+            border-left: 4px solid #ffd700;
+            background-color: #fff9e6;
+        }
+
+        .correct {
+            border-left: 4px solid #4caf50;
+            background-color: #f1f8e9;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .correct-result {
+            background-color: #f1f8e9; /* Light green background */
+            color: #2e7d32; /* Dark green text */
+        }
+
+        .incorrect-result {
+            background-color: #ffebee; /* Light red background */
+            color: #c62828; /* Dark red text */
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .correct-answer {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f4c3;
+            border: 1px solid #c0ca33;
+            color: #827717;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    {% for question in questions %}
+    <div class="quiz-card">
+        <div class="question">
+            <div class="label">Question:</div>
+            <p>{{ question.question }}</p>  <!-- Fetch question text from the database -->
+            <div class="code-block">
+                {{ question.code }}  <!-- Display the code from the question object -->
+            </div>
+        </div>
+
+        <div class="options-section">
+            <div class="label">Options:</div>
+            <ul class="options">
+                {% for option in question.options %}
+                <li class="option {% if option == question.your_answer %}selected{% endif %}
+                        {% if option == question.correct_answer %}correct{% endif %}">
+                    {{ option }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="result {% if question.is_correct %}correct-result{% else %}incorrect-result{% endif %}">
+            <div class="label">Result:</div>
+            Your answer ({{ question.your_answer }}) is 
+            {% if question.is_correct %}
+                correct! ✓
+            {% else %}
+                incorrect. ✘
+                <div class="correct-answer">
+                    <strong>Correct Answer:</strong> {{ question.correct_answer }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="explanation">
+            <div class="label">Explanation:</div>
+            <p>{{ question.explanation }}</p>  <!-- Explanation from the database -->
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>
